@@ -1,10 +1,10 @@
 {
   "name": "gemini-flash-test",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend for Gemini Flash Worksheet Generator",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "axios": "^1.10.0",
-    "body-parser": "^2.2.0",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0"

@@ -1,64 +1,30 @@
 const express = require("express");
-const mysql = require("mysql2");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+const { generateWithFlash } = require("./geminiFlashService");
+
 const app = express();
+const PORT = 5000;
 
-app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
-// Database connection setup
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "questions_db",
-});
+app.post("/generate-worksheet", async (req, res) => {
+  const { prompt } = req.body;
 
-db.connect((err) => {
-  if (err) {
-    console.log("Database connection error:", err);
-  } else {
-    console.log("Connected to MySQL Database!");
+  if (!prompt || typeof prompt !== "string") {
+    return res.status(400).json({ error: "Invalid or missing prompt." });
+  }
+
+  try {
+    const result = await generateWithFlash(prompt);
+    res.json({ result });
+  } catch (err) {
+    console.error("❌ Server error:", err);
+    res.status(500).json({ error: "Failed to generate worksheet." });
   }
 });
 
-app.post("/upload-question", (req, res) => {
-  const {
-    questionType,
-    question,
-    grade,
-    topic,
-    difficultyLevel,
-    mcqAnswer,
-    options,
-  } = req.body;
-
-  const query = `
-    INSERT INTO questions (questionType, question, grade, topic, difficultyLevel, mcqAnswer, options) 
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  const values = [
-    questionType,
-    question,
-    grade,
-    topic,
-    difficultyLevel,
-    mcqAnswer,
-    JSON.stringify(options), // Store options as JSON string
-  ];
-
-  db.query(query, values, (err, result) => {
-    if (err) {
-      console.error("Error uploading question:", err);
-      res.status(500).json({ success: false, message: "Database error" });
-    } else {
-      res.status(200).json({ success: true, message: "Question uploaded successfully!" });
-    }
-  });
-});
-
-const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`✅ Gemini backend running at http://localhost:${PORT}`);
 });
