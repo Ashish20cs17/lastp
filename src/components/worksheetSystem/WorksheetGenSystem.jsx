@@ -90,15 +90,16 @@ ${fallbackExamples}
   };
 
   // ✅ Gemini API fetch
-  const generateWorksheetFromGemini = async (prompt) => {
-    const res = await fetch("http://localhost:5000/generate-worksheet", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
-    const data = await res.json();
-    return data.result;
-  };
+const generateWorksheetFromGemini = async (prompt) => {
+  const res = await fetch("https://one5-july.onrender.com/generate-worksheet", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt }),
+  });
+  const data = await res.json();
+  return data.result;
+};
+
 
 const handleGenerate = async () => {
   setIsLoading(true);
